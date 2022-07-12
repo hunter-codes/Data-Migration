@@ -1,0 +1,27 @@
+{
+  "dataSources": [{
+    "name": "source",
+    "jdbcUrl": "jdbc:h2:mem:source",
+    "driverClassName": "org.h2.Driver",
+    "userName": null,
+    "password": null
+  }, {
+    "name": "dest",
+    "jdbcUrl": "jdbc:h2:mem:dest",
+    "driverClassName": "org.h2.Driver",
+    "userName": null,
+    "password": null
+  }],
+  "sourceSql": "SELECT resak001, resak002, resak003 FROM RESAK",
+  "destinationTable": "TBL_EMPLOYEES",
+  "columnMappings": [{
+    "sourceColumn": "resak001",
+    "destinationColumn": "emp_no"
+  }, {
+    "sourceColumn": "resak002",
+    "destinationColumn": "name"
+  }, {
+    "sourceColumn": "resak003",
+    "destinationColumn": "display_name"
+  }]
+}
