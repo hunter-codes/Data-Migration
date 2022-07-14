@@ -3,11 +3,15 @@ package io.codes.datamigration;
 import com.zaxxer.hikari.HikariDataSource;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.support.EncodedResource;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.jdbc.datasource.init.ScriptUtils;
 
 
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -23,11 +27,11 @@ public class DynamicDataSourceTest {
         dataSource.setDriverClassName("org.h2.Driver");
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
-        dataSource.getConnection().setAutoCommit(false);
-        jdbcTemplate.execute("CREATE TABLE tbl_user(id integer)");
-        dataSource.getConnection().commit();
-        dataSource.getConnection().setAutoCommit(true);
-        jdbcTemplate.update("INSERT INTO tbl_user values(1)");
+        ClassPathResource script = new ClassPathResource("DynamicDataSourceTest.sql");
+        EncodedResource encodedScript = new EncodedResource(script, StandardCharsets.UTF_8);
+        ScriptUtils.executeSqlScript(dataSource.getConnection(), encodedScript);
+
+        // jdbcTemplate.update("INSERT INTO tbl_user values(1)");
         Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM tbl_user", Integer.class);
 
         assertThat(count).as("测试Count").isGreaterThan(0);
